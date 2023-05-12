@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CBS2S06</title>
+  </head>
+  <body>
+    <h1>CBS2S06</h1>
+    <input type="text" id="inputText">
+    <button onclick="processInput()">提交</button>
+    <div id="output"></div>
+    <script>
+      async function processInput() {
+        const inputText = document.getElementById("inputText").value;
+        const apiKey = "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";
+        const url = `https://api.openai.com/v1/engines/davinci-codex/completions?api_key=${apiKey}`;
+        const data = {
+          prompt: inputText,
+          max_tokens: 60,
+          n: 1,
+          stop: "\n",
+        };
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        const responseData = await response.json();
+        const outputText = responseData.choices[0].text;
+        const outputElement = document.getElementById("output");
+        outputElement.innerText = outputText;
+      }
+    </script>
+  </body>
+</html>
