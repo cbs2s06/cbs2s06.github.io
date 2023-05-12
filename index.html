@@ -1,36 +1,55 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>CBS2S06</title>
-  </head>
-  <body>
-    <h1>CBS2S06</h1>
-    <input type="text" id="inputText">
-    <button onclick="processInput()">提交</button>
-    <div id="output"></div>
-    <script>
-      async function processInput() {
-        const inputText = document.getElementById("inputText").value;
-        const apiKey = "";
-        const url = `https://api.openai.com/v1/engines/davinci-codex/completions?api_key=${apiKey}`;
-        const data = {
-          prompt: inputText,
-          max_tokens: 60,
-          n: 1,
-          stop: "\n",
-        };
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-        const responseData = await response.json();
-        const outputText = responseData.choices[0].text;
-        const outputElement = document.getElementById("output");
-        outputElement.innerText = outputText;
-      }
-    </script>
-  </body>
+<head>
+	<title>ChatGPT Demo</title>
+</head>
+<body>
+	<h1>ChatGPT Demo</h1>
+	<p>请输入您要发送的信息：</p>
+	<input type="text" id="input" size="50">
+	<button onclick="send()">发送</button>
+	<p>ChatGPT 的回复消息：</p>
+	<textarea id="output" cols="50" rows="10"></textarea>
+
+	<script>
+		function send() {
+            // 获取用户输入的信息
+            var input = document.getElementById("input").value;
+
+            // 创建 XMLHttpRequest 对象
+            var xhr = new XMLHttpRequest();
+
+            // 设置要发送的数据和 URL
+            var url = "https://api.openai.com/v1/engines/davinci-codex/completions";
+            var data = JSON.stringify({
+                "prompt": input,
+                "temperature": 0.7,
+                "max_tokens": 60,
+                "top_p": 1,
+                "n": 1,
+                "stop": "\n"
+            });
+
+            // 设置 API 密钥和请求头
+            var api_key = "YOUR_API_KEY";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("Authorization", "Bearer " + api_key);
+
+            // 设置响应处理函数
+            xhr.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // 解析响应数据
+                    var response = JSON.parse(this.responseText);
+
+                    // 显示 ChatGPT 的回复消息
+                    document.getElementById("output").value = response.choices[0].text;
+                }
+            };
+
+            // 发送 POST 请求
+            xhr.send(data);
+        }
+	</script>
+</body>
 </html>
